@@ -25,13 +25,24 @@ module.exports = (context, next) => {
 
   // e.g. tmp-1Ul5PLSfZ8HOi.jpg
   const destination =
-    // base name
+    // source === /tmp/tmp-1Ul5PLSfZ8HOi.doc
+    // basename === tmp-1Ul5PLSfZ8HOi
     path.basename(source, path.extname(context.input.filename)) +
     '.' +
     context.input.toExt;
 
   // decode64
   const fromContent = Base64.decode(context.input.fromContent);
+
+  //test
+  console.log(
+    'source',
+    source,
+    'destination',
+    destination,
+    'fromContent',
+    fromContent
+  );
 
   // write to file
   fs.writeFileSync(source, fromContent);

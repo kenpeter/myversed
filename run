@@ -7,6 +7,10 @@ bash to running container
 --
 docker exec -t -i myversed /bin/bash
 
+
+
+
+==========================================================
 stop all
 --
 docker container stop $(docker container ls -aq)

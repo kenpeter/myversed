@@ -50,22 +50,20 @@ app.post('/api/1.0/convert', (req, res, next) => {
   const filename = req.body.filename;
   const fromMimetype = req.body.fromMimetype;
   const fromContent = req.body.fromContent; // base64
-  const fromExt = req.body.fromExt;
   const toExt = req.body.toExt;
-
-  middleware.run(
-    {
-      // input
-      input: {
-        filename: filename,
-        fromMimetype: fromMimetype,
-        fromContent: fromContent, // base64
-        fromExt: fromExt,
-        toExt: toExt,
-      },
+  const localContext = {
+    input: {
+      filename: filename, // file.txt
+      fromMimetype: fromMimetype,
+      fromContent: fromContent, // base64
+      toExt: toExt,
     },
-    context => {}
-  );
+  };
+
+  //test
+  console.log('localContext', localContext);
+
+  middleware.run(localContext, context => {});
 
   res.status(200).end();
 

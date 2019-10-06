@@ -6,6 +6,7 @@ RUN apt-get update
 # office
 RUN apt-get install libreoffice -y
 RUN apt-get install vim -y
+RUN npm install -g nodemon
 
 # vimrc
 WORKDIR /root
@@ -28,4 +29,4 @@ COPY . .
 EXPOSE 3000
 
 # run node index.js
-CMD [ "node", "index.js" ]
+CMD [ "nodemon", "index.js" ]
