@@ -10,8 +10,8 @@ const mime = require('mime');
 const express = require('express');
 // get it
 const bodyParser = require('body-parser');
-// media
-const multer  = require('multer')
+// upload
+const multer = require('multer');
 
 // mid
 const Middleware = require('./middleware');
@@ -21,17 +21,20 @@ let middleware = new Middleware();
 
 // read the mid
 fs.readdirSync(path.join(__dirname, 'middleware')).forEach(function(file) {
-    middleware.use(require(path.join(__dirname, 'middleware', file)));
+  middleware.use(require(path.join(__dirname, 'middleware', file)));
 });
 
 // express
 const app = express();
 
-// pulic
+// limit
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
+// pulic dir
 app.use(express.static('public'));
 // url encode
-app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(bodyParser.urlencoded({extended: true}));
 // json
 app.use(bodyParser.json());
 
@@ -39,51 +42,68 @@ app.use(bodyParser.json());
 const storage = multer.memoryStorage();
 
 // up
-const upload = multer({ storage: storage });
+const upload = multer({storage: storage});
 
 // https://stackoverflow.com/questions/31585890/send-base64-object-to-expressjs-server
 // post, convert, single file
-app.post('/convert', upload.single('file'), function (req, res, next) {
+app.post('/api/1.0/convert', (req, res, next) => {
+  const type = req.body.type;
+  const data = req.body.data;
+
+  console.log(type, data);
+
+  res.status(200).end();
+
+  /*
   // mime type
   const mimetype = mime.lookup(req.file.originalname);
   // mime type
   const type = mimetype.split('/')[0];
 
   // Run file through the pipeline
-  middleware.run({
-    // input
-    input: {
-      // format, req, body, format
-      format: req.body.format,
-      // file name
-      filename: req.file.originalname,
-      mimetype: mimetype,
-      // ?
-      type: type,
-      // ?
-      buffer: req.file.buffer
-    }
-    }, (context) => {
-        if (context.error) {
-            console.error(context.error);
-        }
+  middleware.run(
+    {
+      // input
+      input: {
+        // format, req, body, format
+        format: req.body.format,
+        // file name
+        filename: req.file.originalname,
+        mimetype: mimetype,
+        // ?
+        type: type,
+        // ?
+        buffer: req.file.buffer,
+      },
+    },
+    context => {
+      if (context.error) {
+        console.error(context.error);
+      }
 
-        // Send the result or error
-        if (context.output) {
-            res.writeHead(200, {
-                'Content-Type': mime.lookup(context.input.format),
-                'Content-disposition': 'attachment;filename=' 
-                    + path.basename(context.input.filename, path.extname(context.input.filename)) 
-                    + '.' + req.body.format,
-                'Content-Length': context.output.buffer.length
-            });
-            res.end(context.output.buffer);
-        } else {
-            res.status(500).end();
-        }
-    });
+      // Send the result or error
+      if (context.output) {
+        res.writeHead(200, {
+          'Content-Type': mime.lookup(context.input.format),
+          'Content-disposition':
+            'attachment;filename=' +
+            path.basename(
+              context.input.filename,
+              path.extname(context.input.filename)
+            ) +
+            '.' +
+            req.body.format,
+          'Content-Length': context.output.buffer.length,
+        });
+        res.end(context.output.buffer);
+      } else {
+        res.status(500).end();
+      }
+    }
+  );
+  */
 });
 
-app.listen(3000, function () {
-    console.log('Listening on port 3000');
+app.listen(3000, function() {
+  console.log('Listening on port 3000');
 });
