@@ -52,7 +52,7 @@ module.exports = (context, next) => {
   const process = childProcess.spawn('soffice', [
     '--headless', // headless
     '--convert-to', // convert
-    context.input.format, // data format
+    context.input.toExt, // data format
     source, // file source
   ]);
 
@@ -64,15 +64,18 @@ module.exports = (context, next) => {
   // on close
   process.on('close', () => {
     fs.readFile(destination, (err, data) => {
+      //test
+      console.log('err', err, 'data', data);
+
       if (err) {
         context.error = err;
       } else {
         context.output = {
-          buffer: data,
+          resData: data,
         };
-        fs.unlinkSync(destination);
+        //fs.unlinkSync(destination);
       }
-      fs.unlinkSync(source);
+      //fs.unlinkSync(source);
       next();
     });
   });
