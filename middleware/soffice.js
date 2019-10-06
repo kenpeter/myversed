@@ -9,29 +9,32 @@ const childProcess = require('child_process');
 // tmp
 const tmp = require('tmp');
 
+// base64
+const Base64 = require('js-base64').Base64;
+
 // tmp clear
 tmp.setGracefulCleanup();
 
 // in context, next
 module.exports = (context, next) => {
-  // no autio
-  if (context.input.type == 'audio' || context.input.type == 'video') {
-    return next();
-  }
-
-  // abcsdf.doc
+  // e.g. /tmp/tmp-1Ul5PLSfZ8HOi.doc
   const source = tmp.tmpNameSync({
+    // postfix, ext
     postfix: path.extname(context.input.filename),
   });
 
-  //
+  // e.g. tmp-1Ul5PLSfZ8HOi.jpg
   const destination =
+    // base name
     path.basename(source, path.extname(context.input.filename)) +
     '.' +
-    context.input.format;
+    context.input.toExt;
 
-  // write sync: source to buffer
-  fs.writeFileSync(source, context.input.buffer);
+  // decode64
+  const fromContent = Base64.decode(context.input.fromContent);
+
+  // write to file
+  fs.writeFileSync(source, fromContent);
 
   // child proces spawn
   // office

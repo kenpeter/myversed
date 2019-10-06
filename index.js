@@ -47,10 +47,9 @@ const upload = multer({storage: storage});
 // https://stackoverflow.com/questions/31585890/send-base64-object-to-expressjs-server
 // post, convert, single file
 app.post('/api/1.0/convert', (req, res, next) => {
-  const fileName = req.body.fileName;
-
+  const filename = req.body.filename;
   const fromMimetype = req.body.fromMimetype;
-  const fromContent = req.body.fromContent;
+  const fromContent = req.body.fromContent; // base64
   const fromExt = req.body.fromExt;
   const toExt = req.body.toExt;
 
@@ -58,9 +57,9 @@ app.post('/api/1.0/convert', (req, res, next) => {
     {
       // input
       input: {
-        fileName: fileName,
+        filename: filename,
         fromMimetype: fromMimetype,
-        fromContent: fromContent,
+        fromContent: fromContent, // base64
         fromExt: fromExt,
         toExt: toExt,
       },
