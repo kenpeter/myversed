@@ -5,6 +5,11 @@ FROM node:stretch
 RUN apt-get update
 # office
 RUN apt-get install libreoffice -y
+RUN apt-get install vim -y
+
+# vimrc
+WORKDIR /root
+COPY .vimrc .
 
 # workdir, user/src/app
 WORKDIR /usr/src/app

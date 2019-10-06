@@ -1,7 +1,7 @@
 build and run
 --
 docker build -t myversed . 
-docker run -d -p 3000:3000 --name myversed myversed 
+docker run -p 3000:3000 --name myversed myversed 
 
 bash to running container
 --
