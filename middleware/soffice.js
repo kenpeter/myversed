@@ -71,11 +71,11 @@ module.exports = (context, next) => {
         context.error = err;
       } else {
         context.output = {
-          resData: data,
+          buffer: data,
         };
-        //fs.unlinkSync(destination);
+        fs.unlinkSync(destination);
       }
-      //fs.unlinkSync(source);
+      fs.unlinkSync(source);
       next();
     });
   });

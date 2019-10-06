@@ -63,9 +63,30 @@ app.post('/api/1.0/convert', (req, res, next) => {
   //test
   console.log('localContext', localContext);
 
-  middleware.run(localContext, context => {});
+  middleware.run(localContext, context => {
+    if (context.error) {
+      console.error(context.error);
+    }
 
-  res.status(200).end();
+    // Send the result or error
+    if (context.output) {
+      res.writeHead(200, {
+        'Content-Type': fromMimetype,
+        'Content-disposition':
+          'attachment;filename=' +
+          path.basename(
+            context.input.filename,
+            path.extname(context.input.filename)
+          ) +
+          '.' +
+          toExt,
+        'Content-Length': context.output.buffer.length,
+      });
+      res.end(context.output.buffer);
+    } else {
+      res.status(500).end();
+    }
+  });
 
   /*
   // mime type
